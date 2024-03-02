@@ -1,0 +1,55 @@
+{%extends 'base.html'%}
+{%block body_block%}
+
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="card mb-4">
+                {%if questions.image%}
+                    <a href="#!"><img class="card-img-top" src={{questions.image.url}} alt="..." /></a>
+                {%endif%}
+                <div class="card-body">
+                    <div class="small text-muted">{{questions.created_date}}</div>
+                    <h2 class="card-title h4">{{questions.user}}</h2>
+                    <p class="card-text">{{questions.description}}</p>
+                    <form action="{%url 'postanswer' questions.id%}" method="post">
+                        {%csrf_token%}
+                        <!-- <div><textarea name="answer" id="" cols="30" rows="5"></textarea></div>-->
+
+                        {%csrf_token%}
+                        {{form.as_p}}
+                        <input type="submit" name="" id="" value="post answer"class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
+            <p class="d-inline-flex gap-1">
+                <button class="btn btn-primary form-control" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Show Answers
+                </button>
+              </p>
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body ">
+                  <ul  class="list-group list-group-flush">
+                    {%for qs in questions.fetch_answers%}
+
+                    <li class="list-group-item">
+                            <a href="{%url 'upvote' qs.id%}">upvote <span>{{qs.upvotes.all.count}}</span></a>
+                            <div>{{qs.answer}}</div>
+                            <div>{{qs.user}}</div>
+                            <div>{{qs.created_date}}</div>
+                            {%if request.user == qs.user%}
+                                <a href="{%url 'delete-answer' qs.id%}">delete</a>
+                            {%endif%}
+                    </li>
+                    {%endfor%}
+
+                  </ul>
+                </div>
+              </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+
+</div>
+{%endblock%}
